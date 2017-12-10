@@ -1,0 +1,33 @@
+---
+
+- name: Flask / Bcrypt Setup
+  remote_user: root
+  hosts: all
+  connection: local
+  gather_facts: true
+  tasks:
+
+  - name: Install Crypto Dependencies
+    yum:
+      name: "{{ item }}"
+    with_items:
+      - gcc
+      - libffi-devel 
+      - python-devel 
+      - openssl-devel
+
+  - name: Downloading get-pip.py
+    get_url:
+      url: https://bootstrap.pypa.io/get-pip.py
+      dest: /tmp/get-pip.py
+
+  - name: Installing pip
+    command: python /tmp/get-pip.py
+    become: True
+
+  - name: Flask install
+    pip:
+      name: "{{ item }}"
+    with_items:
+      - flask
+      - py-bcrypt
