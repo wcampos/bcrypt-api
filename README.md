@@ -19,3 +19,11 @@ i.e
 $ curl -XGET http://localhost:5000/pwdencrypt/password
 $04$FCDjDCjTjkZNfYSaD9OS..aZyMzca7wZyKrWPtrHlt01qKNCb2Y5m
 ```
+
+### DockerHub
+
+Docker Hub: [wcampos]("https://hub.docker.com/r/wcampos/bcrypt-api/")
+
+```bash
+docker pull wcampos/bcrypt-api
+```
