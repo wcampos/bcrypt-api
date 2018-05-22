@@ -6,7 +6,7 @@ Small flask app to generate hash pw with py-bcrypt
 Once Container is running:
 
 ```bash 
-$ curl -XGET http://localhost:5000/pwdencrypt/<your_password>
+$ curl -XGET http://localhost:5000/pwdncrypt/<your_password>
 ```
 
 *Notes:*
