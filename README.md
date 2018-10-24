@@ -16,7 +16,7 @@ $ curl -XGET http://localhost:5000/pwdncrypt/<your_password>
 i.e 
 
 ```bash 
-$ curl -XGET http://localhost:5000/pwdencrypt/password
+$ curl -XGET http://localhost:5000/pwdncrypt/password
 $04$FCDjDCjTjkZNfYSaD9OS..aZyMzca7wZyKrWPtrHlt01qKNCb2Y5m
 ```
 
