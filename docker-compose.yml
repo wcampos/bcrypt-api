@@ -14,10 +14,10 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/pwdncrypt"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
     deploy:
       resources:
         limits:
@@ -41,13 +41,16 @@ services:
     volumes:
       - ./app:/app/app:ro
       - ./tests:/app/tests:ro
-    command: ["python3", "app/api.py"]
+    environment:
+      - PORT=5000
+      - FLASK_DEBUG=true
+      - BCRYPT_ROUNDS=4
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/pwdncrypt"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
     networks:
       - app-network
 

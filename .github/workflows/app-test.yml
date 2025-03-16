@@ -20,30 +20,69 @@ jobs:
       run: |
         docker compose build api
         docker compose up -d api
-        # Wait for container to be ready and healthy
         echo "Waiting for production container to be ready..."
-        timeout 30s bash -c 'while ! curl -s http://localhost:5000/pwdncrypt > /dev/null; do sleep 1; done'
+        # Show logs while waiting
+        timeout 60s bash -c '
+          while ! curl -s http://localhost:5000/pwdncrypt > /dev/null; do
+            echo "Container not ready, checking logs..."
+            docker compose logs api
+            sleep 5
+          done
+        ' || {
+          echo "Container failed to start. Last logs:"
+          docker compose logs api
+          docker compose down
+          exit 1
+        }
         # Test the API endpoints
         curl -v http://localhost:5000/pwdncrypt
-        docker compose logs api
         docker compose down
 
     - name: Build and test development image
       run: |
         docker compose build api-dev
         docker compose up -d api-dev
-        # Wait for container to be ready and healthy
         echo "Waiting for development container to be ready..."
-        timeout 30s bash -c 'while ! curl -s http://localhost:5001/pwdncrypt > /dev/null; do sleep 1; done'
+        # Show logs while waiting
+        timeout 60s bash -c '
+          while ! curl -s http://localhost:5001/pwdncrypt > /dev/null; do
+            echo "Container not ready, checking logs..."
+            docker compose logs api-dev
+            sleep 5
+          done
+        ' || {
+          echo "Container failed to start. Last logs:"
+          docker compose logs api-dev
+          docker compose down
+          exit 1
+        }
         # Test the API endpoints
         curl -v http://localhost:5001/pwdncrypt
-        docker compose logs api-dev
         docker compose down
 
     - name: Run tests in container
       run: |
-        # Run tests with proper network setup
+        # Start the container first to ensure API is available for tests
+        docker compose up -d api-dev
+        echo "Waiting for test container to be ready..."
+        timeout 60s bash -c '
+          while ! curl -s http://localhost:5001/pwdncrypt > /dev/null; do
+            echo "Container not ready, checking logs..."
+            docker compose logs api-dev
+            sleep 5
+          done
+        ' || {
+          echo "Container failed to start. Last logs:"
+          docker compose logs api-dev
+          docker compose down
+          exit 1
+        }
+        
+        # Run tests
         docker compose run --rm \
           --network host \
           -v "$(pwd)/tests:/app/tests:ro" \
-          api-dev python3 -m pytest tests/ -v 
+          api-dev python3 -m pytest tests/ -v
+        
+        # Cleanup
+        docker compose down 
