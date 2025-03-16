@@ -1,21 +1,37 @@
-FROM centos:7
+FROM amazonlinux:2023
 
-WORKDIR /
+# Install dependencies and create app user
+RUN yum -y update && \
+    yum -y install python3-pip python3-devel gcc libffi-devel openssl-devel shadow-utils && \
+    yum clean all && \
+    useradd -m -r appuser && \
+    mkdir -p /app && \
+    chown -R appuser:appuser /app
 
-RUN yum -y update all && \
-    yum -y install software-properties-common \
-          python-software-properties \
-          ansible
+WORKDIR /app
 
-ADD ansible /ansible
+# Install Python packages
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt && \
+    rm -f requirements.txt
 
-ADD app /app
+# Copy application code
+COPY app /app
+RUN chown -R appuser:appuser /app
 
-RUN ansible-playbook -i "localhost," -c local /ansible/main_setup.yml
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=5000 \
+    FLASK_DEBUG=false \
+    BCRYPT_ROUNDS=12
 
-ENTRYPOINT ["python"]
+# Switch to non-root user
+USER appuser
 
-CMD ["/app/api.py"]
-
+# Expose port
 EXPOSE 5000
+
+# Use gunicorn for production
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--chdir", "app", "api:app"]
 
