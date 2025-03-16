@@ -45,4 +45,5 @@ jobs:
         # Run tests with proper network setup
         docker compose run --rm \
           --network host \
-          api-dev pytest 
+          -v "$(pwd)/tests:/app/tests:ro" \
+          api-dev python3 -m pytest tests/ -v 

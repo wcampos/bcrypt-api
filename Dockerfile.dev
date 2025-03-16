@@ -2,7 +2,7 @@ FROM amazonlinux:2023
 
 # Install dependencies
 RUN yum -y update && \
-    yum -y install python3-pip python3-devel gcc libffi-devel openssl-devel shadow-utils curl && \
+    yum -y install python3-pip python3-devel gcc libffi-devel openssl-devel shadow-utils curl-minimal && \
     yum clean all
 
 WORKDIR /app
