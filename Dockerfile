@@ -16,7 +16,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt && \
     rm -f requirements.txt
 
 # Copy application code
-COPY app /app
+COPY app app/
 RUN chown -R appuser:appuser /app
 
 # Set environment variables
@@ -33,5 +33,5 @@ USER appuser
 EXPOSE 5000
 
 # Use gunicorn for production
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--chdir", "app", "api:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.api:app"]
 

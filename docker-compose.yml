@@ -45,6 +45,7 @@ services:
       - PORT=5000
       - FLASK_DEBUG=true
       - BCRYPT_ROUNDS=4
+      - PYTHONPATH=/app
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/pwdncrypt"]
       interval: 5s
