@@ -1,5 +1,3 @@
-name: bcrypt-api
-
 services:
   api:
     build:

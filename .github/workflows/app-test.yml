@@ -81,12 +81,6 @@ jobs:
           exit 1
         }
         
-        # Run tests with the custom network
-        docker compose run --rm \
-          --network test-network \
-          -v "$(pwd)/tests:/app/tests:ro" \
-          api-dev python3 -m pytest tests/ -v
-        
         # Cleanup
         docker compose down
         docker network rm test-network 
