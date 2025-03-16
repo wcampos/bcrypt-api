@@ -1,4 +1,4 @@
-version: '3.8'
+name: bcrypt-api
 
 services:
   api:
@@ -28,8 +28,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - app-network
 
   # Development service with hot reload
   api-dev:
@@ -51,10 +49,4 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-      start_period: 15s
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge 
+      start_period: 15s 

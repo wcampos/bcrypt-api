@@ -62,7 +62,10 @@ jobs:
 
     - name: Run tests in container
       run: |
-        # Start the container first to ensure API is available for tests
+        # Create a custom network for testing
+        docker network create test-network
+        
+        # Start the container with the custom network
         docker compose up -d api-dev
         echo "Waiting for test container to be ready..."
         timeout 60s bash -c '
@@ -78,11 +81,12 @@ jobs:
           exit 1
         }
         
-        # Run tests
+        # Run tests with the custom network
         docker compose run --rm \
-          --network host \
+          --network test-network \
           -v "$(pwd)/tests:/app/tests:ro" \
           api-dev python3 -m pytest tests/ -v
         
         # Cleanup
-        docker compose down 
+        docker compose down
+        docker network rm test-network 
