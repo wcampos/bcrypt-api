@@ -1,0 +1,24 @@
+FROM amazonlinux:2023
+
+# Install dependencies
+RUN yum -y update && \
+    yum -y install python3-pip python3-devel gcc libffi-devel openssl-devel shadow-utils curl && \
+    yum clean all
+
+WORKDIR /app
+
+# Install Python packages
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt && \
+    pip3 install watchdog[watchmedo] && \
+    rm -f requirements.txt
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+# Expose port
+EXPOSE 5000
+
+# Use Python directly for development with auto-reload
+CMD ["python3", "app/api.py"] 
