@@ -2,7 +2,7 @@ FROM amazonlinux:2023
 
 # Install dependencies and create app user
 RUN yum -y update && \
-    yum -y install python3-pip python3-devel gcc libffi-devel openssl-devel shadow-utils && \
+    yum -y install python3-pip python3-devel gcc libffi-devel openssl-devel shadow-utils curl && \
     yum clean all && \
     useradd -m -r appuser && \
     mkdir -p /app && \
